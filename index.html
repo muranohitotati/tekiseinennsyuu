@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>適正年収診断ツール</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap');
+        body {
+            font-family: 'Kosugi Maru', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+        .main-container {
+            background: #161b22;
+            border: 1px solid #30363d;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .button-gradient {
+            background-image: linear-gradient(90deg, #1f6feb, #4c8cff);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .button-gradient:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(31, 110, 235, 0.4);
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #4c8cff;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Report styling for emphasis */
+        .report-section {
+            border-left: 4px solid #4c8cff;
+            padding-left: 1rem;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body class="p-4 flex flex-col items-center justify-center min-h-screen">
+
+    <!-- Main Container -->
+    <div class="main-container p-6 sm:p-8 rounded-xl max-w-3xl w-full mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-2">
+                あなたの適正年収診断
+            </h1>
+            <p class="text-sm text-gray-400">市場価値に基づいたパーソナライズされた年収レポートをAIが作成します。</p>
+        </header>
+
+        <!-- Input Form -->
+        <div class="space-y-6">
+            <!-- 1. 基本情報 -->
+            <div class="bg-[#21262d] p-4 rounded-lg">
+                <h2 class="text-lg font-semibold text-[#4c8cff] mb-3">1. 基本情報</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="age-select" class="block text-sm font-medium mb-1">年齢層</label>
+                        <select id="age-select" class="w-full p-2 rounded-md bg-[#0d1117] border border-[#30363d] text-white focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">選択してください</option>
+                            <option value="20代前半">20代前半</option>
+                            <option value="20代後半">20代後半</option>
+                            <option value="30代前半">30代前半</option>
+                            <option value="30代後半">30代後半</option>
+                            <option value="40代">40代</option>
+                            <option value="50代以上">50代以上</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="experience-select" class="block text-sm font-medium mb-1">職務経験年数</label>
+                        <select id="experience-select" class="w-full p-2 rounded-md bg-[#0d1117] border border-[#30363d] text-white focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">選択してください</option>
+                            <option value="0-3年 (初心者)">0-3年 (初心者)</option>
+                            <option value="4-7年 (中堅)">4-7年 (中堅)</option>
+                            <option value="8-15年 (ベテラン)">8-15年 (ベテラン)</option>
+                            <option value="16年以上 (エキスパート)">16年以上 (エキスパート)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 職務とロケーション -->
+            <div class="bg-[#21262d] p-4 rounded-lg">
+                <h2 class="text-lg font-semibold text-[#4c8cff] mb-3">2. 職務とロケーション</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="industry-input" class="block text-sm font-medium mb-1">現在の業界</label>
+                        <input type="text" id="industry-input" placeholder="例: IT/ソフトウェア開発、医療・福祉、金融" class="w-full p-2 rounded-md bg-[#0d1117] border border-[#30363d] text-white placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="role-input" class="block text-sm font-medium mb-1">現在の職種・役割</label>
+                        <input type="text" id="role-input" placeholder="例: Webエンジニア、営業マネージャー、経理担当" class="w-full p-2 rounded-md bg-[#0d1117] border border-[#30363d] text-white placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="location-input" class="block text-sm font-medium mb-1">勤務地</label>
+                        <input type="text" id="location-input" placeholder="例: 東京都、大阪府、リモート" class="w-full p-2 rounded-md bg-[#0d1117] border border-[#30363d] text-white placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. スキルと強み -->
+            <div class="bg-[#21262d] p-4 rounded-lg">
+                <h2 class="text-lg font-semibold text-[#4c8cff] mb-3">3. スキルと強み (複数選択可)</h2>
+                <div class="flex flex-wrap gap-2 text-sm">
+                    <label class="flex items-center space-x-2 bg-[#0d1117] rounded-full px-3 py-1 cursor-pointer hover:bg-[#2c333b]">
+                        <input type="checkbox" name="skills" value="プロジェクト管理能力" class="form-checkbox h-4 w-4 text-blue-500 rounded border-gray-600 focus:ring-blue-500">
+                        <span class="text-gray-300">プロジェクト管理能力</span>
+                    </label>
+                    <label class="flex items-center space-x-2 bg-[#0d1117] rounded-full px-3 py-1 cursor-pointer hover:bg-[#2c333b]">
+                        <input type="checkbox" name="skills" value="英語力/ビジネスレベルの語学力" class="form-checkbox h-4 w-4 text-blue-500 rounded border-gray-600 focus:ring-blue-500">
+                        <span class="text-gray-300">英語力/ビジネスレベルの語学力</span>
+                    </label>
+                    <label class="flex items-center space-x-2 bg-[#0d1117] rounded-full px-3 py-1 cursor-pointer hover:bg-[#2c333b]">
+                        <input type="checkbox" name="skills" value="特定技術の専門知識 (例: AI, Fintech)" class="form-checkbox h-4 w-4 text-blue-500 rounded border-gray-600 focus:ring-blue-500">
+                        <span class="text-gray-300">特定技術の専門知識 (例: AI, Fintech)</span>
+                    </label>
+                    <label class="flex items-center space-x-2 bg-[#0d1117] rounded-full px-3 py-1 cursor-pointer hover:bg-[#2c333b]">
+                        <input type="checkbox" name="skills" value="チーム育成/リーダーシップ経験" class="form-checkbox h-4 w-4 text-blue-500 rounded border-gray-600 focus:ring-blue-500">
+                        <span class="text-gray-300">チーム育成/リーダーシップ経験</span>
+                    </label>
+                    <label class="flex items-center space-x-2 bg-[#0d1117] rounded-full px-3 py-1 cursor-pointer hover:bg-[#2c333b]">
+                        <input type="checkbox" name="skills" value="高いコミュニケーション/交渉力" class="form-checkbox h-4 w-4 text-blue-500 rounded border-gray-600 focus:ring-blue-500">
+                        <span class="text-gray-300">高いコミュニケーション/交渉力</span>
+                    </label>
+                </div>
+                <label for="other-skills" class="block text-sm font-medium mt-3 mb-1">その他の強み</label>
+                <textarea id="other-skills" rows="2" placeholder="例: 簿記一級、マーケティング戦略立案の経験" class="w-full p-2 rounded-md bg-[#0d1117] border border-[#30363d] text-white placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500"></textarea>
+            </div>
+            
+            <!-- 4. 働き方 -->
+            <div class="bg-[#21262d] p-4 rounded-lg">
+                <h2 class="text-lg font-semibold text-[#4c8cff] mb-3">4. 希望の働き方</h2>
+                <div class="flex flex-wrap gap-2 text-sm">
+                    <label class="flex items-center space-x-2 bg-[#0d1117] rounded-full px-3 py-1 cursor-pointer hover:bg-[#2c333b]">
+                        <input type="checkbox" name="work_style" value="完全リモートワーク希望" class="form-checkbox h-4 w-4 text-blue-500 rounded border-gray-600 focus:ring-blue-500">
+                        <span class="text-gray-300">完全リモートワーク希望</span>
+                    </label>
+                    <label class="flex items-center space-x-2 bg-[#0d1117] rounded-full px-3 py-1 cursor-pointer hover:bg-[#2c333b]">
+                        <input type="checkbox" name="work_style" value="管理職・マネージャーポジションを志向" class="form-checkbox h-4 w-4 text-blue-500 rounded border-gray-600 focus:ring-blue-500">
+                        <span class="text-gray-300">管理職・マネージャーポジションを志向</span>
+                    </label>
+                    <label class="flex items-center space-x-2 bg-[#0d1117] rounded-full px-3 py-1 cursor-pointer hover:bg-[#2c333b]">
+                        <input type="checkbox" name="work_style" value="副業/兼業が可能であることを重視" class="form-checkbox h-4 w-4 text-blue-500 rounded border-gray-600 focus:ring-blue-500">
+                        <span class="text-gray-300">副業/兼業が可能であることを重視</span>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Button -->
+        <div class="flex justify-center mt-8">
+            <button id="diagnose-button" class="button-gradient text-white font-bold py-3 px-12 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center">
+                <span id="button-text">年収を診断する</span>
+                <div id="loading-spinner" class="spinner ml-3 hidden"></div>
+            </button>
+        </div>
+
+        <!-- Result Area -->
+        <div id="result-container" class="mt-10 p-6 rounded-xl bg-[#21262d] border border-[#30363d] hidden">
+            <h2 class="text-2xl font-bold text-[#4c8cff] mb-4 text-center">診断レポート</h2>
+            <div id="report-content" class="text-gray-300 whitespace-pre-wrap">
+                <!-- AI report will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="salary_diagnosis.js"></script>
+</body>
+</html>
