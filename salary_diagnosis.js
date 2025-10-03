@@ -1,6 +1,6 @@
         // Gemini API configuration
         const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=';
-        const apiKey = ""; // Canvas will provide this in runtime
+        const apiKey = "ここにあなたのAPIキーを入力してください"; // Canvas will provide this in runtime
 
         // UI Elements
         const diagnoseButton = document.getElementById('diagnose-button');
